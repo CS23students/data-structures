@@ -25,10 +25,11 @@ void enqueue(struct Node** front, struct Node** rear, int data) {
     struct Node* newNode = createNode(data);
     if (*rear == NULL) {
         *front = *rear = newNode;
-    } else {
-        (*rear)->next = newNode;
-        *rear = newNode;
+        printf("Enqueued %d into the queue.\n", data);
+        return;
     }
+    (*rear)->next = newNode;
+    *rear = newNode;
     printf("Enqueued %d into the queue.\n", data);
 }
 
@@ -43,7 +44,7 @@ int dequeue(struct Node** front, struct Node** rear) {
     *front = (*front)->next;
 
     if (*front == NULL) {
-        *rear = NULL;
+        *rear = NULL;  // If the queue becomes empty, rear should also be NULL
     }
 
     free(temp);
@@ -54,7 +55,7 @@ int dequeue(struct Node** front, struct Node** rear) {
 // Function to peek at the front element of the queue
 int peek(struct Node* front) {
     if (isEmpty(front)) {
-        printf("Queue is empty! Cannot peek.\n");
+        printf("Queue is empty!\n");
         return -1;
     }
     return front->data;
@@ -76,17 +77,16 @@ void displayQueue(struct Node* front) {
 }
 
 int main() {
-    struct Node* front = NULL;  // Initialize front of the queue
-    struct Node* rear = NULL;   // Initialize rear of the queue
+    struct Node* front = NULL;  // Initialize the front of the queue as NULL
+    struct Node* rear = NULL;   // Initialize the rear of the queue as NULL
     int choice, value;
 
     while (1) {
         printf("\n1. Enqueue\n");
         printf("2. Dequeue\n");
         printf("3. Peek\n");
-        printf("4. Display Queue\n");
-        printf("5. Check if Queue is Empty\n");
-        printf("6. Exit\n");
+        printf("4. Display\n");
+        printf("5. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -113,14 +113,6 @@ int main() {
                 break;
 
             case 5:
-                if (isEmpty(front)) {
-                    printf("Queue is empty.\n");
-                } else {
-                    printf("Queue is not empty.\n");
-                }
-                break;
-
-            case 6:
                 exit(0);
 
             default:
