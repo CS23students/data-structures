@@ -70,6 +70,25 @@ struct Node* addPoly(struct Node* poly1, struct Node* poly2) {
         }
     }
 
+ // Function to subtract two polynomials
+struct Node* subtractPoly(struct Node* poly1, struct Node* poly2) {
+    struct Node* result = NULL;
+
+    while (poly1 != NULL && poly2 != NULL) {
+        if (poly1->exp > poly2->exp) {
+            insertTerm(&result, poly1->coeff, poly1->exp);
+            poly1 = poly1->next;
+        } else if (poly1->exp < poly2->exp) {
+            insertTerm(&result, -poly2->coeff, poly2->exp); // Subtract the coefficient
+            poly2 = poly2->next;
+        } else {
+            insertTerm(&result, poly1->coeff - poly2->coeff, poly1->exp);
+            poly1 = poly1->next;
+            poly2 = poly2->next;
+        }
+    }
+
+
     // Add remaining terms
     while (poly1 != NULL) {
         insertTerm(&result, poly1->coeff, poly1->exp);
@@ -104,10 +123,14 @@ int main() {
     printf("Polynomial 2: ");
     displayPoly(poly2);
 
-    // Add the two polynomials
+     // Add the two polynomials
     result = addPoly(poly1, poly2);
-
     printf("Resultant Polynomial after addition: ");
+    displayPoly(result);
+
+    // Subtract the two polynomials
+    result = subtractPoly(poly1, poly2);
+    printf("Resultant Polynomial after subtraction: ");
     displayPoly(result);
 
     return 0;
