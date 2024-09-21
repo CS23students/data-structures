@@ -2,222 +2,244 @@
 #include <stdlib.h>
 
 // Define the structure for a node in the BST
-struct Node {
+struct node {
     int data;
-    struct Node* left;
-    struct Node* right;
+    struct node *left;
+    struct node *right;
 };
 
-// Function to create a new node
-struct Node* createNode(int data) {
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    newNode->data = data;
-    newNode->left = newNode->right = NULL;
-    return newNode;
+// Count total number of nodes
+int totalNodes(struct node* tree) {
+    if (tree == NULL) return 0;
+    return 1 + totalNodes(tree->left) + totalNodes(tree->right);
 }
 
-// Function to insert a node in the BST
-struct Node* insert(struct Node* root, int data) {
-    if (root == NULL) {
-        return createNode(data);  // Create a new node if tree is empty
-    }
-
-    // Recursively insert the new data
-    if (data < root->data) {
-        root->left = insert(root->left, data);
-    } else if (data > root->data) {
-        root->right = insert(root->right, data);
-    }
-
-    return root;
+// Count total number of external nodes
+int totalExternalNodes(struct node* tree) {
+    if (tree == NULL) return 0;
+    if (tree->left == NULL && tree->right == NULL) return 1;
+    return totalExternalNodes(tree->left) + totalExternalNodes(tree->right);
 }
 
-// Function to search for a node in the BST
-struct Node* search(struct Node* root, int data) {
-    if (root == NULL || root->data == data) {
-        return root;  // Return the found node or NULL if not found
-    }
-
-    if (data < root->data) {
-        return search(root->left, data);  // Search in the left subtree
-    }
-
-    return search(root->right, data);  // Search in the right subtree
+// Count total number of internal nodes
+int totalInternalNodes(struct node* tree) {
+    if (tree == NULL || (tree->left == NULL && tree->right == NULL)) return 0;
+    return 1 + totalInternalNodes(tree->left) + totalInternalNodes(tree->right);
 }
 
-// Function to find the minimum value node in the BST
-struct Node* findMin(struct Node* root) {
-    struct Node* current = root;
-
-    // Loop down to find the leftmost leaf
-    while (current && current->left != NULL) {
-        current = current->left;
-    }
-
-    return current;
+// Determine the height of the tree
+int height(struct node* tree) {
+    if (tree == NULL) return 0;
+    int leftHeight = height(tree->left);
+    int rightHeight = height(tree->right);
+    return (leftHeight > rightHeight ? leftHeight : rightHeight) + 1;
 }
 
-// Function to delete a node from the BST
-struct Node* deleteNode(struct Node* root, int data) {
-    if (root == NULL) {
-        return root;  // If the tree is empty
+// Find the mirror image of the tree
+struct node* mirrorImage(struct node* tree) {
+    if (tree == NULL) return NULL;
+    struct node* temp = tree->left;
+    tree->left = mirrorImage(tree->right);
+    tree->right = mirrorImage(temp);
+    return tree;
+}
+
+// Delete the tree
+struct node* deleteTree(struct node* tree) {
+    if (tree != NULL) {
+        deleteTree(tree->left);
+        deleteTree(tree->right);
+        free(tree);
+    }
+    return NULL;
+}
+
+// Free memory function
+void freeMemory(struct node* tree) {
+    deleteTree(tree);
+}
+
+// Function to insert an element in the BST
+struct node* insertElement(struct node* tree, int val) {
+    if (tree == NULL) {
+        struct node* newNode = (struct node*)malloc(sizeof(struct node));
+        newNode->data = val;
+        newNode->left = NULL;
+        newNode->right = NULL;
+        return newNode;
     }
 
-    // Recursively find the node to be deleted
-    if (data < root->data) {
-        root->left = deleteNode(root->left, data);
-    } else if (data > root->data) {
-        root->right = deleteNode(root->right, data);
+    if (val < tree->data) {
+        tree->left = insertElement(tree->left, val);
     } else {
-        // Node found, handle the three cases
-        if (root->left == NULL) {  // Node with only right child or no child
-            struct Node* temp = root->right;
-            free(root);
+        tree->right = insertElement(tree->right, val);
+    }
+    return tree;
+}
+
+// Preorder Traversal
+void preorderTraversal(struct node* tree) {
+    if (tree != NULL) {
+        printf("%d\t", tree->data);
+        preorderTraversal(tree->left);
+        preorderTraversal(tree->right);
+    }
+}
+
+// Inorder Traversal
+void inorderTraversal(struct node* tree) {
+    if (tree != NULL) {
+        inorderTraversal(tree->left);
+        printf("%d\t", tree->data);
+        inorderTraversal(tree->right);
+    }
+}
+
+// Postorder Traversal
+void postorderTraversal(struct node* tree) {
+    if (tree != NULL) {
+        postorderTraversal(tree->left);
+        postorderTraversal(tree->right);
+        printf("%d\t", tree->data);
+    }
+}
+
+// Find the smallest element
+struct node* findSmallestElement(struct node* tree) {
+    if (tree == NULL) return NULL;
+    while (tree->left != NULL) {
+        tree = tree->left;
+    }
+    return tree;
+}
+
+// Find the largest element
+struct node* findLargestElement(struct node* tree) {
+    if (tree == NULL) return NULL;
+    while (tree->right != NULL) {
+        tree = tree->right;
+    }
+    return tree;
+}
+
+// Delete an element from the BST
+struct node* deleteElement(struct node* tree, int val) {
+    if (tree == NULL) return NULL;
+
+    if (val < tree->data) {
+        tree->left = deleteElement(tree->left, val);
+    } else if (val > tree->data) {
+        tree->right = deleteElement(tree->right, val);
+    } else {
+        // Node found
+        if (tree->left == NULL) {
+            struct node* temp = tree->right;
+            free(tree);
             return temp;
-        } else if (root->right == NULL) {  // Node with only left child
-            struct Node* temp = root->left;
-            free(root);
+        } else if (tree->right == NULL) {
+            struct node* temp = tree->left;
+            free(tree);
             return temp;
         }
 
-        // Node with two children: Get the inorder successor (smallest in the right subtree)
-        struct Node* temp = findMin(root->right);
-
-        // Replace data with the inorder successor's data
-        root->data = temp->data;
-
-        // Delete the inorder successor
-        root->right = deleteNode(root->right, temp->data);
+        // Node with two children
+        struct node* temp = findSmallestElement(tree->right);
+        tree->data = temp->data;
+        tree->right = deleteElement(tree->right, temp->data);
     }
-
-    return root;
+    return tree;
 }
 
-// Function to perform inorder traversal (Left, Root, Right)
-void inorder(struct Node* root) {
-    if (root != NULL) {
-        inorder(root->left);
-        printf("%d ", root->data);
-        inorder(root->right);
-    }
-}
-
-// Function to perform preorder traversal (Root, Left, Right)
-void preorder(struct Node* root) {
-    if (root != NULL) {
-        printf("%d ", root->data);
-        preorder(root->left);
-        preorder(root->right);
-    }
-}
-
-// Function to perform postorder traversal (Left, Right, Root)
-void postorder(struct Node* root) {
-    if (root != NULL) {
-        postorder(root->left);
-        postorder(root->right);
-        printf("%d ", root->data);
-    }
-}
-
-// Function to find the maximum value node in the BST
-struct Node* findMax(struct Node* root) {
-    struct Node* current = root;
-
-    // Loop down to find the rightmost leaf
-    while (current && current->right != NULL) {
-        current = current->right;
-    }
-
-    return current;
-}
-
-// Main function to demonstrate BST operations
+// Main function
 int main() {
-    struct Node* root = NULL;
-    int choice, value;
+    struct node* tree = NULL;
+    int option, val;
 
-    while (1) {
-        printf("\n1. Insert\n");
-        printf("2. Search\n");
-        printf("3. Delete\n");
-        printf("4. Inorder Traversal\n");
-        printf("5. Preorder Traversal\n");
-        printf("6. Postorder Traversal\n");
-        printf("7. Find Minimum\n");
-        printf("8. Find Maximum\n");
-        printf("9. Exit\n");
-        printf("Enter your choice: ");
-        scanf("%d", &choice);
+    do {
+        printf("\n****** MAIN MENU *******\n");
+        printf("1. Insert Element\n");
+        printf("2. Preorder Traversal\n");
+        printf("3. Inorder Traversal\n");
+        printf("4. Postorder Traversal\n");
+        printf("5. Find the smallest element\n");
+        printf("6. Find the largest element\n");
+        printf("7. Delete an element\n");
+        printf("8. Count total number of nodes\n");
+        printf("9. Count total number of external nodes\n");
+        printf("10. Count total number of internal nodes\n");
+        printf("11. Determine the height of the tree\n");
+        printf("12. Find the mirror image of the tree\n");
+        printf("13. Delete the tree\n");
+        printf("14. Exit\n");
+        printf("Enter your option: ");
+        scanf("%d", &option);
 
-        switch (choice) {
+        switch(option) {
             case 1:
-                printf("Enter value to insert: ");
-                scanf("%d", &value);
-                root = insert(root, value);
+                printf("Enter the value of the new node: ");
+                scanf("%d", &val);
+                tree = insertElement(tree, val);
                 break;
-
             case 2:
-                printf("Enter value to search: ");
-                scanf("%d", &value);
-                struct Node* searchResult = search(root, value);
-                if (searchResult != NULL) {
-                    printf("Node with value %d found in the tree.\n", searchResult->data);
-                } else {
-                    printf("Node with value %d not found in the tree.\n", value);
-                }
-                break;
-
-            case 3:
-                printf("Enter value to delete: ");
-                scanf("%d", &value);
-                root = deleteNode(root, value);
-                printf("Node with value %d deleted from the tree.\n", value);
-                break;
-
-            case 4:
-                printf("Inorder Traversal: ");
-                inorder(root);
-                printf("\n");
-                break;
-
-            case 5:
                 printf("Preorder Traversal: ");
-                preorder(root);
-                printf("\n");
+                preorderTraversal(tree);
                 break;
-
-            case 6:
+            case 3:
+                printf("Inorder Traversal: ");
+                inorderTraversal(tree);
+                break;
+            case 4:
                 printf("Postorder Traversal: ");
-                postorder(root);
-                printf("\n");
+                postorderTraversal(tree);
                 break;
-
+            case 5:
+                {
+                    struct node* smallest = findSmallestElement(tree);
+                    if (smallest) {
+                        printf("Smallest element is: %d\n", smallest->data);
+                    } else {
+                        printf("Tree is empty.\n");
+                    }
+                    break;
+                }
+            case 6:
+                {
+                    struct node* largest = findLargestElement(tree);
+                    if (largest) {
+                        printf("Largest element is: %d\n", largest->data);
+                    } else {
+                        printf("Tree is empty.\n");
+                    }
+                    break;
+                }
             case 7:
-                struct Node* minNode = findMin(root);
-                if (minNode != NULL) {
-                    printf("Minimum value in the tree is: %d\n", minNode->data);
-                } else {
-                    printf("The tree is empty.\n");
-                }
+                printf("Enter the element to be deleted: ");
+                scanf("%d", &val);
+                tree = deleteElement(tree, val);
                 break;
-
             case 8:
-                struct Node* maxNode = findMax(root);
-                if (maxNode != NULL) {
-                    printf("Maximum value in the tree is: %d\n", maxNode->data);
-                } else {
-                    printf("The tree is empty.\n");
-                }
+                printf("Total number of nodes = %d\n", totalNodes(tree));
                 break;
-
             case 9:
-                exit(0);
-
-            default:
-                printf("Invalid choice! Please try again.\n");
+                printf("Total number of external nodes = %d\n", totalExternalNodes(tree));
+                break;
+            case 10:
+                printf("Total number of internal nodes = %d\n", totalInternalNodes(tree));
+                break;
+            case 11:
+                printf("The height of the tree = %d\n", height(tree));
+                break;
+            case 12:
+                tree = mirrorImage(tree);
+                printf("The mirror image of the tree has been created.\n");
+                break;
+            case 13:
+                tree = deleteTree(tree);
+                printf("The tree has been deleted.\n");
+                break;
         }
-    }
+    } while(option != 14);
 
+    freeMemory(tree);
     return 0;
 }
