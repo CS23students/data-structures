@@ -32,6 +32,7 @@ void insertTerm(struct Node** poly, int coeff, int exp) {
         }
         if (temp->next != NULL && temp->next->exp == exp) {
             temp->next->coeff += coeff;  // Add coefficients if exponent is the same
+            free(newNode); // Free unused node
         } else {
             newNode->next = temp->next;
             temp->next = newNode;
@@ -70,7 +71,20 @@ struct Node* addPoly(struct Node* poly1, struct Node* poly2) {
         }
     }
 
- // Function to subtract two polynomials
+    // Add remaining terms
+    while (poly1 != NULL) {
+        insertTerm(&result, poly1->coeff, poly1->exp);
+        poly1 = poly1->next;
+    }
+    while (poly2 != NULL) {
+        insertTerm(&result, poly2->coeff, poly2->exp);
+        poly2 = poly2->next;
+    }
+
+    return result;
+}
+
+// Function to subtract two polynomials
 struct Node* subtractPoly(struct Node* poly1, struct Node* poly2) {
     struct Node* result = NULL;
 
@@ -88,18 +102,27 @@ struct Node* subtractPoly(struct Node* poly1, struct Node* poly2) {
         }
     }
 
-
     // Add remaining terms
     while (poly1 != NULL) {
         insertTerm(&result, poly1->coeff, poly1->exp);
         poly1 = poly1->next;
     }
     while (poly2 != NULL) {
-        insertTerm(&result, poly2->coeff, poly2->exp);
+        insertTerm(&result, -poly2->coeff, poly2->exp); // Subtract remaining terms
         poly2 = poly2->next;
     }
 
     return result;
+}
+
+// Function to free the polynomial linked list
+void freePoly(struct Node* poly) {
+    struct Node* temp;
+    while (poly != NULL) {
+        temp = poly;
+        poly = poly->next;
+        free(temp);
+    }
 }
 
 int main() {
@@ -123,15 +146,21 @@ int main() {
     printf("Polynomial 2: ");
     displayPoly(poly2);
 
-     // Add the two polynomials
+    // Add the two polynomials
     result = addPoly(poly1, poly2);
     printf("Resultant Polynomial after addition: ");
     displayPoly(result);
+    freePoly(result); // Free memory after use
 
     // Subtract the two polynomials
     result = subtractPoly(poly1, poly2);
     printf("Resultant Polynomial after subtraction: ");
     displayPoly(result);
+    freePoly(result); // Free memory after use
+
+    // Free memory for original polynomials
+    freePoly(poly1);
+    freePoly(poly2);
 
     return 0;
 }
