@@ -262,15 +262,16 @@ int main() {
                 root = deleteNode(root, data);
                 printf("Deleted %d.\n", data);
                 break;
-            case 3:
+            case 3: {
                 printf("Enter the value to search: ");
                 scanf("%d", &data);
-                struct Node* result = search(root, data);
+                struct Node* result = search(root, data);  // Now properly scoped
                 if (result != NULL)
                     printf("Found %d in the tree.\n", data);
                 else
                     printf("%d not found in the tree.\n", data);
                 break;
+            }
             case 4:
                 printf("Inorder Traversal: ");
                 inorderTraversal(root);
@@ -289,9 +290,8 @@ int main() {
             case 7:
                 exit(0);
             default:
-                printf("Invalid choice! Please try again.\n");
+                printf("Invalid choice. Please try again.\n");
         }
     }
     return 0;
 }
-// adelson-velsky and landis (two person names)
