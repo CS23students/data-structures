@@ -1,7 +1,5 @@
-// Queue
-
 #include <stdio.h>
-#define MAX 5 // Maximum size of the queue
+#define MAX 5 // Maximum size of the queue (adjust this)
 
 int queue[MAX];
 int front = 0;
@@ -38,11 +36,24 @@ int peek() {
     return queue[front];
 }
 
+// Display operation to show the queue elements
+void display() {
+    if (front > rear) {
+        printf("Queue is empty\n");
+        return;
+    }
+    printf("Queue elements: ");
+    for (int i = front; i <= rear; i++) {
+        printf("%d ", queue[i]);
+    }
+    printf("\n");
+}
+
 int main() {
     int choice, value;
     
     while (1) {
-        printf("\n1. Enqueue\n2. Dequeue\n3. Peek\n4. Exit\n");
+        printf("\n1. Enqueue\n2. Dequeue\n3. Peek\n4. Display Queue\n5. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -65,6 +76,9 @@ int main() {
                 }
                 break;
             case 4:
+                display();
+                break;
+            case 5:
                 return 0; // Exit the program
             default:
                 printf("Invalid choice\n");
