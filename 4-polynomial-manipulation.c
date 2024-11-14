@@ -125,20 +125,29 @@ void freePoly(struct Node* poly) {
     }
 }
 
+// Function to get polynomial terms from the user
+void getPolynomialInput(struct Node** poly) {
+    int n, coeff, exp;
+    printf("Enter the number of terms in the polynomial: ");
+    scanf("%d", &n);
+    
+    for (int i = 0; i < n; i++) {
+        printf("Enter coefficient and exponent for term %d: ", i + 1);
+        scanf("%d %d", &coeff, &exp);
+        insertTerm(poly, coeff, exp);
+    }
+}
+
 int main() {
     struct Node* poly1 = NULL;
     struct Node* poly2 = NULL;
     struct Node* result = NULL;
 
-    // Polynomial 1: 3x^3 + 4x^2 + 5
-    insertTerm(&poly1, 3, 3);
-    insertTerm(&poly1, 4, 2);
-    insertTerm(&poly1, 5, 0);
+    printf("Input for Polynomial 1:\n");
+    getPolynomialInput(&poly1);
 
-    // Polynomial 2: 5x^2 + 2x + 3
-    insertTerm(&poly2, 5, 2);
-    insertTerm(&poly2, 2, 1);
-    insertTerm(&poly2, 3, 0);
+    printf("Input for Polynomial 2:\n");
+    getPolynomialInput(&poly2);
 
     printf("Polynomial 1: ");
     displayPoly(poly1);
@@ -164,3 +173,20 @@ int main() {
 
     return 0;
 }
+
+
+// Sample Output: 
+// Input for Polynomial 1:
+// Enter the number of terms in the polynomial: 3
+// Enter coefficient and exponent for term 1: 4 3
+// Enter coefficient and exponent for term 2: 5 2
+// Enter coefficient and exponent for term 3: 6 0
+// Input for Polynomial 2:
+// Enter the number of terms in the polynomial: 3
+// Enter coefficient and exponent for term 1: 2 2
+// Enter coefficient and exponent for term 2: 5 1
+// Enter coefficient and exponent for term 3: 3 0
+// Polynomial 1: 4x^3 + 5x^2 + 6x^0
+// Polynomial 2: 2x^2 + 5x^1 + 3x^0
+// Resultant Polynomial after addition: 4x^3 + 7x^2 + 5x^1 + 9x^0
+// Resultant Polynomial after subtraction: 4x^3 + 3x^2-5x^1 + 3x^0
