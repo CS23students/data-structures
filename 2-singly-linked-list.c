@@ -41,6 +41,39 @@ void insertAtEnd(int value) {
     printf("%d inserted at the end\n", value);
 }
 
+// Function to insert a node at a specified position (middle)
+void insertAtMiddle(int value, int position) {
+    // Allocate memory for a new node
+    struct Node* newNode = (struct Node*) malloc(sizeof(struct Node));
+    newNode->data = value;
+
+    // If inserting at the beginning (position 1)
+    if (position == 1) {
+        newNode->next = head;
+        head = newNode;
+        printf("%d inserted at position %d\n", value, position);
+        return;
+    }
+
+    // Traverse to the position before the one where we want to insert
+    struct Node* temp = head;
+    for (int i = 1; i < position - 1 && temp != NULL; i++) {
+        temp = temp->next;
+    }
+
+    // If the position is invalid (greater than the number of nodes)
+    if (temp == NULL) {
+        printf("Invalid position\n");
+        free(newNode); // Free the allocated memory
+        return;
+    }
+
+    // Insert the new node at the desired position
+    newNode->next = temp->next;
+    temp->next = newNode;
+    printf("%d inserted at position %d\n", value, position);
+}
+
 // Function to delete a node by its value
 void deleteByValue(int value) {
     struct Node* temp = head;
@@ -92,10 +125,10 @@ void displayList() {
 }
 
 int main() {
-    int choice, value;
+    int choice, value, position;
 
     while (1) {
-        printf("\n1. Insert at Beginning\n2. Insert at End\n3. Delete by Value\n4. Display List\n5. Exit\n");
+        printf("\n1. Insert at Beginning\n2. Insert at End\n3. Insert at Middle\n4. Delete by Value\n5. Display List\n6. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -111,14 +144,21 @@ int main() {
                 insertAtEnd(value);
                 break;
             case 3:
+                printf("Enter value to insert: ");
+                scanf("%d", &value);
+                printf("Enter position to insert at (starting from 1): ");
+                scanf("%d", &position);
+                insertAtMiddle(value, position);
+                break;
+            case 4:
                 printf("Enter value to delete: ");
                 scanf("%d", &value);
                 deleteByValue(value);
                 break;
-            case 4:
+            case 5:
                 displayList();
                 break;
-            case 5:
+            case 6:
                 return 0;
             default:
                 printf("Invalid choice\n");
