@@ -196,35 +196,75 @@ int main() {
 // 2. Quadratic Probing
 // 1
 // Enter the number of keys to insert: 4
-// Enter key to insert: 10
+// Enter key to insert: 4 10
 // Enter key to insert: 20
 // Enter key to insert: 30
 // Enter key to insert: 40
 // Hash table after insertions:
-// Slot 0: EMPTY
-// Slot 1: EMPTY
+// Slot 0: 10
+// Slot 1: 20
 // Slot 2: 30
 // Slot 3: 40
 // Slot 4: EMPTY
-// Slot 5: 10
-// Slot 6: 20
+// Slot 5: EMPTY
+// Slot 6: EMPTY
 // Slot 7: EMPTY
 // Slot 8: EMPTY
 // Slot 9: EMPTY
 
-// Enter key to search: 30
-// Key 30 found at index 2
+// Enter key to search: 20
+// Key 20 found at index 1
 
 // Enter key to delete: 20
 // Key 20 deleted using Linear Probing
 // Hash table after deletion:
-// Slot 0: EMPTY
-// Slot 1: EMPTY
+// Slot 0: 10
+// Slot 1: DELETED
 // Slot 2: 30
 // Slot 3: 40
 // Slot 4: EMPTY
-// Slot 5: 10
-// Slot 6: DELETED
+// Slot 5: EMPTY
+// Slot 6: EMPTY
 // Slot 7: EMPTY
 // Slot 8: EMPTY
 // Slot 9: EMPTY
+
+
+// SAMPLE OUTPUT :
+// Choose probing technique:
+// 1. Linear Probing
+// 2. Quadratic Probing
+// 1 2
+// Enter the number of keys to insert: 4
+// Enter key to insert: 20
+// Enter key to insert: 2 30
+// Enter key to insert: 50
+// Enter key to insert: 60
+// Hash table after insertions:
+// Slot 0: 20
+// Slot 1: 30
+// Slot 2: EMPTY
+// Slot 3: EMPTY
+// Slot 4: 50
+// Slot 5: EMPTY
+// Slot 6: EMPTY
+// Slot 7: EMPTY
+// Slot 8: EMPTY
+// Slot 9: 60
+
+// Enter key to search: 30
+// Key 30 found at index 1
+
+// Enter key to delete: 50
+// Key 50 deleted using Quadratic Probing
+// Hash table after deletion:
+// Slot 0: 20
+// Slot 1: 30
+// Slot 2: EMPTY
+// Slot 3: EMPTY
+// Slot 4: DELETED
+// Slot 5: EMPTY
+// Slot 6: EMPTY
+// Slot 7: EMPTY
+// Slot 8: EMPTY
+// Slot 9: 60
