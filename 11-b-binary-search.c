@@ -1,5 +1,21 @@
 #include <stdio.h>
 
+// Function to perform selection sort
+void selectionSort(int arr[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        int minIndex = i; // Assume the current element is the smallest
+        for (int j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j; // Update minIndex if a smaller element is found
+            }
+        }
+        // Swap the found minimum element with the first element
+        int temp = arr[minIndex];
+        arr[minIndex] = arr[i];
+        arr[i] = temp;
+    }
+}
+
 // Function to perform binary search
 int binarySearch(int arr[], int low, int high, int target) {
     while (low <= high) {
@@ -26,16 +42,26 @@ int main() {
     int n, target;
 
     // Input array size
-    printf("Enter the number of elements in the sorted array: ");
+    printf("Enter the number of elements in the array: ");
     scanf("%d", &n);
 
     int arr[n];
 
-    // Input elements (sorted)
-    printf("Enter %d sorted elements:\n", n);
+    // Input elements
+    printf("Enter %d elements:\n", n);
     for (int i = 0; i < n; i++) {
         scanf("%d", &arr[i]);
     }
+
+    // Sort the array using selection sort
+    selectionSort(arr, n);
+
+    // Display the sorted array
+    printf("Sorted array:\n");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
 
     // Input target element to search
     printf("Enter the target element to search: ");
