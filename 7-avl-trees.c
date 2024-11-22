@@ -72,7 +72,6 @@ int getBalance(struct Node* node) {
 
 // Insert a node in AVL tree and return the new root
 struct Node* insert(struct Node* node, int data) {
-    // 1. Perform normal BST insertion
     if (node == NULL)
         return createNode(data);
 
@@ -81,53 +80,32 @@ struct Node* insert(struct Node* node, int data) {
     else if (data > node->data)
         node->right = insert(node->right, data);
     else
-        return node; // Equal data are not allowed in BST
+        return node; // Equal data are not allowed
 
-    // 2. Update height of this ancestor node
     node->height = 1 + max(height(node->left), height(node->right));
-
-    // 3. Get the balance factor to check whether this node is unbalanced
     int balance = getBalance(node);
 
-    // 4. If the node is unbalanced, then balance it using the four rotation cases:
-
-    // Left Left Case
     if (balance > 1 && data < node->left->data)
         return rightRotate(node);
 
-    // Right Right Case
     if (balance < -1 && data > node->right->data)
         return leftRotate(node);
 
-    // Left Right Case
     if (balance > 1 && data > node->left->data) {
         node->left = leftRotate(node->left);
         return rightRotate(node);
     }
 
-    // Right Left Case
     if (balance < -1 && data < node->right->data) {
         node->right = rightRotate(node->right);
         return leftRotate(node);
     }
 
-    return node; // Return the (unchanged) node pointer
+    return node;
 }
 
-// Function to find the node with the minimum value in a tree
-struct Node* minValueNode(struct Node* node) {
-    struct Node* current = node;
-
-    // Loop down to find the leftmost leaf
-    while (current->left != NULL)
-        current = current->left;
-
-    return current;
-}
-
-// Function to delete a node in AVL tree and return the new root
+// Delete a node in AVL tree
 struct Node* deleteNode(struct Node* root, int data) {
-    // 1. Perform standard BST delete
     if (root == NULL)
         return root;
 
@@ -136,57 +114,44 @@ struct Node* deleteNode(struct Node* root, int data) {
     else if (data > root->data)
         root->right = deleteNode(root->right, data);
     else {
-        // Node with only one child or no child
         if ((root->left == NULL) || (root->right == NULL)) {
             struct Node* temp = root->left ? root->left : root->right;
 
-            // No child case
             if (temp == NULL) {
                 temp = root;
                 root = NULL;
-            } else // One child case
-                *root = *temp; // Copy the contents of the non-empty child
+            } else
+                *root = *temp;
 
             free(temp);
         } else {
-            // Node with two children: Get the inorder successor (smallest in the right subtree)
-            struct Node* temp = minValueNode(root->right);
+            struct Node* temp = root->right;
 
-            // Copy the inorder successor's data to this node
+            while (temp->left != NULL)
+                temp = temp->left;
+
             root->data = temp->data;
-
-            // Delete the inorder successor
             root->right = deleteNode(root->right, temp->data);
         }
     }
 
-    // If the tree had only one node, return
     if (root == NULL)
         return root;
 
-    // 2. Update height of the current node
     root->height = 1 + max(height(root->left), height(root->right));
-
-    // 3. Get the balance factor to check whether this node is unbalanced
     int balance = getBalance(root);
 
-    // 4. If the node is unbalanced, then balance it using the four rotation cases:
-
-    // Left Left Case
     if (balance > 1 && getBalance(root->left) >= 0)
         return rightRotate(root);
 
-    // Left Right Case
     if (balance > 1 && getBalance(root->left) < 0) {
         root->left = leftRotate(root->left);
         return rightRotate(root);
     }
 
-    // Right Right Case
     if (balance < -1 && getBalance(root->right) <= 0)
         return leftRotate(root);
 
-    // Right Left Case
     if (balance < -1 && getBalance(root->right) > 0) {
         root->right = rightRotate(root->right);
         return leftRotate(root);
@@ -195,44 +160,7 @@ struct Node* deleteNode(struct Node* root, int data) {
     return root;
 }
 
-// Function to search for a node in AVL tree
-struct Node* search(struct Node* root, int data) {
-    if (root == NULL || root->data == data)
-        return root;
-
-    if (data < root->data)
-        return search(root->left, data);
-    else
-        return search(root->right, data);
-}
-
-// Inorder traversal of the tree
-void inorderTraversal(struct Node* root) {
-    if (root != NULL) {
-        inorderTraversal(root->left);
-        printf("%d ", root->data);
-        inorderTraversal(root->right);
-    }
-}
-
-// Preorder traversal of the tree
-void preorderTraversal(struct Node* root) {
-    if (root != NULL) {
-        printf("%d ", root->data);
-        preorderTraversal(root->left);
-        preorderTraversal(root->right);
-    }
-}
-
-// Postorder traversal of the tree
-void postorderTraversal(struct Node* root) {
-    if (root != NULL) {
-        postorderTraversal(root->left);
-        postorderTraversal(root->right);
-        printf("%d ", root->data);
-    }
-}
-
+// AVL Tree Driver
 int main() {
     struct Node* root = NULL;
     int choice, data;
@@ -241,11 +169,7 @@ int main() {
         printf("\nAVL Tree Operations:\n");
         printf("1. Insert\n");
         printf("2. Delete\n");
-        printf("3. Search\n");
-        printf("4. Inorder Traversal\n");
-        printf("5. Preorder Traversal\n");
-        printf("6. Postorder Traversal\n");
-        printf("7. Exit\n");
+        printf("3. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -262,36 +186,12 @@ int main() {
                 root = deleteNode(root, data);
                 printf("Deleted %d.\n", data);
                 break;
-            case 3: {
-                printf("Enter the value to search: ");
-                scanf("%d", &data);
-                struct Node* result = search(root, data);  // Now properly scoped
-                if (result != NULL)
-                    printf("Found %d in the tree.\n", data);
-                else
-                    printf("%d not found in the tree.\n", data);
-                break;
-            }
-            case 4:
-                printf("Inorder Traversal: ");
-                inorderTraversal(root);
-                printf("\n");
-                break;
-            case 5:
-                printf("Preorder Traversal: ");
-                preorderTraversal(root);
-                printf("\n");
-                break;
-            case 6:
-                printf("Postorder Traversal: ");
-                postorderTraversal(root);
-                printf("\n");
-                break;
-            case 7:
+            case 3:
                 exit(0);
             default:
                 printf("Invalid choice. Please try again.\n");
         }
     }
+
     return 0;
 }
