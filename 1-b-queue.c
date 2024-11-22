@@ -1,5 +1,5 @@
 #include <stdio.h>
-#define MAX 5 // Maximum size of the queue (adjust this)
+#define MAX 5 // Maximum size of the queue
 
 int queue[MAX];
 int front = 0;
