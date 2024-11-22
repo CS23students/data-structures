@@ -1,5 +1,3 @@
-// circular queue
-
 #include <stdio.h>
 
 #define MAX 100 // Maximum size of the queue
@@ -43,12 +41,25 @@ int peek() {
     }
 }
 
+// Display all items in the queue
+void display() {
+    if (size == 0) {
+        printf("Queue is empty\n");
+        return;
+    }
+    printf("Queue elements: ");
+    for (int i = 0; i < size; i++) {
+        printf("%d ", queue[(front + i) % MAX]);
+    }
+    printf("\n");
+}
+
 int main() {
     int value;
     int choice;
     
     while (1) {
-        printf("1. Enqueue\n2. Dequeue\n3. Peek\n4. Exit\n");
+        printf("\n1. Enqueue\n2. Dequeue\n3. Peek\n4. Display Queue\n5. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
         
@@ -65,6 +76,9 @@ int main() {
                 printf("Front item: %d\n", peek());
                 break;
             case 4:
+                display();
+                break;
+            case 5:
                 return 0;
             default:
                 printf("Invalid choice\n");
