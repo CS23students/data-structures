@@ -80,13 +80,9 @@ int main() {
     struct Node* front = NULL;  // Initialize the front of the queue as NULL
     struct Node* rear = NULL;   // Initialize the rear of the queue as NULL
     int choice, value;
-
+        printf("Choices:\n1. Enqueue\n2. Dequeue\n3. Peek\n4. Display\n5. Exit\n");
+    
     while (1) {
-        printf("\n1. Enqueue\n");
-        printf("2. Dequeue\n");
-        printf("3. Peek\n");
-        printf("4. Display\n");
-        printf("5. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -113,12 +109,11 @@ int main() {
                 break;
 
             case 5:
-                exit(0);
+               printf("Exiting...");
+               return 0;
 
             default:
                 printf("Invalid choice! Try again.\n");
         }
     }
-
-    return 0;
 }
