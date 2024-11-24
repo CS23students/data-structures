@@ -58,8 +58,8 @@ int main() {
     int value;
     int choice;
     
+    printf("\n1. Enqueue\n2. Dequeue\n3. Peek\n4. Display Queue\n5. Exit\n");
     while (1) {
-        printf("\n1. Enqueue\n2. Dequeue\n3. Peek\n4. Display Queue\n5. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
         
@@ -68,6 +68,7 @@ int main() {
                 printf("Enter value to enqueue: ");
                 scanf("%d", &value);
                 enqueue(value);
+                printf("%d enqueued to queue",value);
                 break;
             case 2:
                 printf("Dequeued item: %d\n", dequeue());
@@ -79,6 +80,7 @@ int main() {
                 display();
                 break;
             case 5:
+                printf("Exiting...");
                 return 0;
             default:
                 printf("Invalid choice\n");
