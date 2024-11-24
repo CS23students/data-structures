@@ -51,9 +51,8 @@ void display() {
 
 int main() {
     int choice, value;
-    
+    printf("\n1. Enqueue\n2. Dequeue\n3. Peek\n4. Display Queue\n5. Exit\n");
     while (1) {
-        printf("\n1. Enqueue\n2. Dequeue\n3. Peek\n4. Display Queue\n5. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -79,7 +78,8 @@ int main() {
                 display();
                 break;
             case 5:
-                return 0; // Exit the program
+                printf("Exiting...");
+                return 0;
             default:
                 printf("Invalid choice\n");
         }
