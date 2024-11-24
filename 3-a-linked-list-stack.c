@@ -69,13 +69,8 @@ void displayStack(struct Node* top) {
 int main() {
     struct Node* top = NULL;  // Initialize the top of the stack as NULL
     int choice, value;
-
+    printf("Choices:\n1. Push\n2. Pop\n3. Peek\n4. Display\n5. Exit\n");
     while (1) {
-        printf("\n1. Push\n");
-        printf("2. Pop\n");
-        printf("3. Peek\n");
-        printf("4. Display\n");
-        printf("5. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -102,12 +97,11 @@ int main() {
                 break;
 
             case 5:
-                exit(0);
+                printf("Exiting...");
+                return 0;
 
             default:
                 printf("Invalid choice! Try again.\n");
         }
     }
-
-    return 0;
 }
