@@ -50,8 +50,8 @@ int main() {
     int value;
     int choice;
     
+    printf("\n1. Push\n2. Pop\n3. Peek\n4. Display\n5. Exit\n");
     while (1) {
-        printf("\n1. Push\n2. Pop\n3. Peek\n4. Display\n5. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
         
@@ -60,6 +60,7 @@ int main() {
                 printf("Enter value to push: ");
                 scanf("%d", &value);
                 push(value);
+                printf("%d pushed onto stack\n",value);
                 break;
             case 2:
                 printf("Popped item: %d\n", pop());
@@ -71,6 +72,7 @@ int main() {
                 display();
                 break;
             case 5:
+                printf("Exiting...");
                 return 0;
             default:
                 printf("Invalid choice\n");
