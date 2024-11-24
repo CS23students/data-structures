@@ -127,8 +127,8 @@ void displayList() {
 int main() {
     int choice, value, position;
 
+    printf("\n1. Insert at Beginning\n2. Insert at End\n3. Insert at Middle\n4. Delete by Value\n5. Display List\n6. Exit\n");
     while (1) {
-        printf("\n1. Insert at Beginning\n2. Insert at End\n3. Insert at Middle\n4. Delete by Value\n5. Display List\n6. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -159,6 +159,7 @@ int main() {
                 displayList();
                 break;
             case 6:
+                printf("Exiting...");
                 return 0;
             default:
                 printf("Invalid choice\n");
