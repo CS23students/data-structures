@@ -1,3 +1,4 @@
+// method 1
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -11,9 +12,7 @@ struct Node {
 
 // Function to get the height of a node
 int height(struct Node* node) {
-    if (node == NULL)
-        return 0;
-    return node->height;
+    return (node == NULL) ? 0 : node->height;
 }
 
 // Function to create a new node
@@ -22,16 +21,18 @@ struct Node* createNode(int data) {
     node->data = data;
     node->left = NULL;
     node->right = NULL;
-    node->height = 1; // Initially, height of a new node is 1
+    node->height = 1; // New node has height 1
     return node;
 }
 
-// Function to get the maximum of two integers
-int max(int a, int b) {
-    return (a > b) ? a : b;
+// Function to get the balance factor of a node
+int getBalance(struct Node* node) {
+    if (node == NULL)
+        return 0;
+    return height(node->left) - height(node->right);
 }
 
-// Right rotate the subtree rooted at y
+// Utility function to perform right rotation
 struct Node* rightRotate(struct Node* y) {
     struct Node* x = y->left;
     struct Node* T2 = x->right;
@@ -41,13 +42,14 @@ struct Node* rightRotate(struct Node* y) {
     y->left = T2;
 
     // Update heights
-    y->height = max(height(y->left), height(y->right)) + 1;
-    x->height = max(height(x->left), height(x->right)) + 1;
+    y->height = 1 + (height(y->left) > height(y->right) ? height(y->left) : height(y->right));
+    x->height = 1 + (height(x->left) > height(x->right) ? height(x->left) : height(x->right));
 
-    return x; // Return the new root
+    printf("Performed Right Rotation\n");
+    return x; // New root
 }
 
-// Left rotate the subtree rooted at x
+// Utility function to perform left rotation
 struct Node* leftRotate(struct Node* x) {
     struct Node* y = x->right;
     struct Node* T2 = y->left;
@@ -57,57 +59,66 @@ struct Node* leftRotate(struct Node* x) {
     x->right = T2;
 
     // Update heights
-    x->height = max(height(x->left), height(x->right)) + 1;
-    y->height = max(height(y->left), height(y->right)) + 1;
+    x->height = 1 + (height(x->left) > height(x->right) ? height(x->left) : height(x->right));
+    y->height = 1 + (height(y->left) > height(y->right) ? height(y->left) : height(y->right));
 
-    return y; // Return the new root
+    printf("Performed Left Rotation\n");
+    return y; // New root
 }
 
-// Get balance factor of node
-int getBalance(struct Node* node) {
-    if (node == NULL)
-        return 0;
-    return height(node->left) - height(node->right);
-}
-
-// Insert a node in AVL tree and return the new root
-struct Node* insert(struct Node* node, int data) {
-    if (node == NULL)
+// Function to insert a node in the AVL tree
+struct Node* insert(struct Node* root, int data) {
+    if (root == NULL) {
+        printf("Inserted %d.\n", data);
         return createNode(data);
-
-    if (data < node->data)
-        node->left = insert(node->left, data);
-    else if (data > node->data)
-        node->right = insert(node->right, data);
-    else
-        return node; // Equal data are not allowed
-
-    node->height = 1 + max(height(node->left), height(node->right));
-    int balance = getBalance(node);
-
-    if (balance > 1 && data < node->left->data)
-        return rightRotate(node);
-
-    if (balance < -1 && data > node->right->data)
-        return leftRotate(node);
-
-    if (balance > 1 && data > node->left->data) {
-        node->left = leftRotate(node->left);
-        return rightRotate(node);
     }
 
-    if (balance < -1 && data < node->right->data) {
-        node->right = rightRotate(node->right);
-        return leftRotate(node);
+    if (data < root->data)
+        root->left = insert(root->left, data);
+    else if (data > root->data)
+        root->right = insert(root->right, data);
+    else {
+        printf("Duplicate values are not allowed.\n");
+        return root;
     }
 
-    return node;
+    // Update height
+    root->height = 1 + (height(root->left) > height(root->right) ? height(root->left) : height(root->right));
+
+    // Get balance factor
+    int balance = getBalance(root);
+
+    // Perform rotations if unbalanced
+    if (balance > 1 && data < root->left->data)
+        return rightRotate(root); // Left Left Case
+    if (balance < -1 && data > root->right->data)
+        return leftRotate(root); // Right Right Case
+    if (balance > 1 && data > root->left->data) { // Left Right Case
+        root->left = leftRotate(root->left);
+        return rightRotate(root);
+    }
+    if (balance < -1 && data < root->right->data) { // Right Left Case
+        root->right = rightRotate(root->right);
+        return leftRotate(root);
+    }
+
+    return root;
 }
 
-// Delete a node in AVL tree
+// Function to find the node with minimum value
+struct Node* minValueNode(struct Node* node) {
+    struct Node* current = node;
+    while (current->left != NULL)
+        current = current->left;
+    return current;
+}
+
+// Function to delete a node from the AVL tree
 struct Node* deleteNode(struct Node* root, int data) {
-    if (root == NULL)
+    if (root == NULL) {
+        printf("Value %d not found in the tree.\n", data);
         return root;
+    }
 
     if (data < root->data)
         root->left = deleteNode(root->left, data);
@@ -116,20 +127,16 @@ struct Node* deleteNode(struct Node* root, int data) {
     else {
         if ((root->left == NULL) || (root->right == NULL)) {
             struct Node* temp = root->left ? root->left : root->right;
-
             if (temp == NULL) {
                 temp = root;
                 root = NULL;
-            } else
+            } else {
                 *root = *temp;
-
+            }
             free(temp);
+            printf("Deleted %d.\n", data);
         } else {
-            struct Node* temp = root->right;
-
-            while (temp->left != NULL)
-                temp = temp->left;
-
+            struct Node* temp = minValueNode(root->right);
             root->data = temp->data;
             root->right = deleteNode(root->right, temp->data);
         }
@@ -138,21 +145,22 @@ struct Node* deleteNode(struct Node* root, int data) {
     if (root == NULL)
         return root;
 
-    root->height = 1 + max(height(root->left), height(root->right));
+    // Update height
+    root->height = 1 + (height(root->left) > height(root->right) ? height(root->left) : height(root->right));
+
+    // Get balance factor
     int balance = getBalance(root);
 
+    // Perform rotations if unbalanced
     if (balance > 1 && getBalance(root->left) >= 0)
-        return rightRotate(root);
-
-    if (balance > 1 && getBalance(root->left) < 0) {
+        return rightRotate(root); // Left Left Case
+    if (balance > 1 && getBalance(root->left) < 0) { // Left Right Case
         root->left = leftRotate(root->left);
         return rightRotate(root);
     }
-
     if (balance < -1 && getBalance(root->right) <= 0)
-        return leftRotate(root);
-
-    if (balance < -1 && getBalance(root->right) > 0) {
+        return leftRotate(root); // Right Right Case
+    if (balance < -1 && getBalance(root->right) > 0) { // Right Left Case
         root->right = rightRotate(root->right);
         return leftRotate(root);
     }
@@ -160,41 +168,68 @@ struct Node* deleteNode(struct Node* root, int data) {
     return root;
 }
 
-// AVL Tree Driver
+// Function to search for an element in the AVL tree
+void search(struct Node* root, int key) {
+    if (root == NULL) {
+        printf("Element %d not found.\n", key);
+        return;
+    }
+    if (key == root->data) {
+        printf("Element %d found.\n", key);
+    } else if (key < root->data) {
+        search(root->left, key);
+    } else {
+        search(root->right, key);
+    }
+}
+
+// Main function
 int main() {
     struct Node* root = NULL;
-    int choice, data;
+    int choice, value;
 
     while (1) {
-        printf("\nAVL Tree Operations:\n");
-        printf("1. Insert\n");
-        printf("2. Delete\n");
-        printf("3. Exit\n");
+        printf("\n1. Insert Element\n");
+        printf("2. Delete Element\n");
+        printf("3. Search Element\n");
+        printf("4. Left Rotate\n");
+        printf("5. Right Rotate\n");
+        printf("6. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
         switch (choice) {
             case 1:
                 printf("Enter the value to insert: ");
-                scanf("%d", &data);
-                root = insert(root, data);
-                printf("Inserted %d.\n", data);
+                scanf("%d", &value);
+                root = insert(root, value);
                 break;
             case 2:
                 printf("Enter the value to delete: ");
-                scanf("%d", &data);
-                root = deleteNode(root, data);
-                printf("Deleted %d.\n", data);
+                scanf("%d", &value);
+                root = deleteNode(root, value);
                 break;
             case 3:
+                printf("Enter the value to search: ");
+                scanf("%d", &value);
+                search(root, value);
+                break;
+            case 4:
+                root = leftRotate(root);
+                break;
+            case 5:
+                root = rightRotate(root);
+                break;
+            case 6:
                 exit(0);
             default:
-                printf("Invalid choice. Please try again.\n");
+                printf("Invalid choice. Try again.\n");
         }
     }
 
     return 0;
 }
+
 
 
 //-------------------------------------------------------------------------------------------------------//
