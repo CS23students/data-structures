@@ -1,167 +1,136 @@
 // ARRAY IMPLEMENTATION
 #include <stdio.h>
 #include <stdlib.h>
-int ch;
 
-int tsize, count;
-int hasht(int key)
-{
-    int i;
-    i = key % tsize;
-    return i;
-}
-//-------LINEAR PROBING-------
-int rehashl(int key)
-{
-    int i;
-    i = (key + 1) % tsize;
-    return i;
-}
-//-------QUADRATIC PROBING-------
-int rehashq(int key, int j)
-{
-    int i;
-    i = (key + (j * j)) % tsize;
-    return i;
+// Global variables
+int ch, tsize;
+
+// Hash function
+int hasht(int key) {
+    return key % tsize;
 }
 
-int Search(int ele, int arr[], int n)
-{
-    int i, t = 0;
-    for (i = 0; i < n; i++)
-        printf("%d\t", arr[i]);
-    if (ele == arr[i])
-        return 1;
-    else
-        return 0;
+// Linear probing rehash function
+int rehashl(int key) {
+    return (key + 1) % tsize;
 }
 
-void main()
-{
-    int an, key, arr[20], hash[20], i, n, s, op = 0, j, k, d;
+// Quadratic probing rehash function
+int rehashq(int key, int j) {
+    return (key + (j * j)) % tsize;
+}
+
+// Insertion function
+void insertion(int arr[], int hash[], int n) {
+    int key, i, k, j;
+    if (ch == 1) {  // Linear probing
+        for (k = 0; k < n; k++) {
+            key = arr[k];
+            i = hasht(key);
+            while (hash[i] != -1) {
+                i = rehashl(i);
+            }
+            hash[i] = key;
+        }
+    } else {  // Quadratic probing
+        for (k = 0; k < n; k++) {
+            j = 1;
+            key = arr[k];
+            i = hasht(key);
+            while (hash[i] != -1) {
+                i = rehashq(i, j);
+                j++;
+            }
+            hash[i] = key;
+        }
+    }
+
+    printf("\nThe elements in the hash table are:\n");
+    for (i = 0; i < tsize; i++)
+        printf("Element at position %d: %d\n", i, hash[i]);
+}
+
+// Search function
+void search(int arr[], int n) {
+    int an, i, t = 0;
+    printf("Enter the search element: ");
+    scanf("%d", &an);
+    for (i = 0; i < n; i++) {
+        if (arr[i] == an) {
+            printf("%d found at position %d\n", an, i + 1);
+            t = 1;
+        }
+    }
+    if (t == 0)
+        printf("Not found\n");
+}
+
+// Delete function
+void deleteElement(int hash[], int tsize) {
+    int d, i;
+    printf("Enter the element to delete: ");
+    scanf("%d", &d);
+    for (i = 0; i < tsize; i++) {
+        if (hash[i] == d) {
+            hash[i] = -1;
+        }
+    }
+    printf("The hash table elements after deletion are:\n");
+    for (i = 0; i < tsize; i++) {
+        printf("Element at position %d: %d\n", i, hash[i]);
+    }
+}
+
+// Main function
+void main() {
+    int arr[20], hash[20], n, op = 0;
 
     printf("Enter the size of the hash table: ");
     scanf("%d", &tsize);
 
-    do
-    {
-        printf("1.Linear probing\n2.Quadratic probing\n3.Exit\n");
-        printf("\nEnter your choice:");
+    for (int i = 0; i < tsize; i++)  // Initialize hash table
+        hash[i] = -1;
+
+    do {
+        printf("\n1. Linear Probing\n2. Quadratic Probing\n3. Exit\n");
+        printf("Enter your choice: ");
         scanf("%d", &ch);
 
-        if (ch == 3)
+        if (ch == 3) {
             break;
-        else
-        {
-            if (ch == 1)
-                printf("\nLinear Probing:\n");
-            else
-                printf("\nQuadratic Probing:\n");
-            printf("\n1.Insertion\n2.search\n3.delete \n4.Exit\n");
+        } else {
+            printf("\n1. Insertion\n2. Search\n3. Delete\n4. Exit\n");
         }
-        do
-        {
-            printf("\n\nEnter your option: ");
 
+        do {
+            printf("\nEnter your option: ");
             scanf("%d", &op);
-            switch (op)
-            {
 
-            case 1:
-
-                printf("\nEnter the number of elements: ");
-                scanf("%d", &n);
-                for (i = 0; i < tsize; i++)
-                    hash[i] = -1;
-                printf("Enter Elements: ");
-                for (i = 0; i < n; i++)
-                {
-                    scanf("%d", &arr[i]);
-                }
-                printf("\nElements:\n");
-                for (i = 0; i < n; i++)
-                    printf("%d\t", arr[i]);
-
-                if (ch == 1)
-                {
-                    for (i = 0; i < tsize; i++)
-                        hash[i] = -1;
-                    for (k = 0; k < n; k++)
-                    {
-                        key = arr[k];
-                        i = hasht(key);
-                        while (hash[i] != -1)
-                        {
-                            i = rehashl(i);
-                        }
-                        hash[i] = key;
+            switch (op) {
+                case 1:
+                    printf("Enter the number of elements: ");
+                    scanf("%d", &n);
+                    printf("Enter elements: ");
+                    for (int i = 0; i < n; i++) {
+                        scanf("%d", &arr[i]);
                     }
-                    printf("\nThe elements in the array are: ");
-                    for (i = 0; i < tsize; i++)
-                        printf("\n Element at position %d: %d", i, hash[i]);
-                }
-                else
-                {
-                    for (i = 0; i < tsize; i++)
-                        hash[i] = -1;
-                    ;
-                    for (k = 0; k < n; k++)
-                    {
-                        j = 1;
-                        key = arr[k];
-                        i = hasht(key);
-                        while (hash[i] != -1)
-                        {
-                            i = rehashq(i, j);
-                            j++;
-                        }
-                        hash[i] = key;
-                    }
-                    printf("\nThe elements in the array are: ");
-                    for (i = 0; i < tsize; i++)
-                    {
-                        printf("\n Element at position %d: %d", i, hash[i]);
-                    }
-                }
+                    insertion(arr, hash, n);
+                    break;
 
-                break;
+                case 2:
+                    search(arr, n);
+                    break;
 
-            case 2:
-                printf("Enter the search element");
-                scanf("%d", &an);
-                int i, t = 0;
-                for (i = 0; i < n; i++)
-                {
-                    if (arr[i] == an)
-                    {
-                        printf("%d Found at position %d",an,i+1);
-                        t = 1;
-                    }
-                }
-                if (t == 0)
-                    printf("Not found");
-                break;
+                case 3:
+                    deleteElement(hash, tsize);
+                    break;
 
-            case 3:
-                printf("Enter the element to delete");
-                scanf("%d", &d);
-                for (i = 0; i < tsize; i++)
-                {
-                    if (hash[i] == d)
-                        hash[i] = -1;
-                }
-                printf("The hash table elements after deleting are\n\n");
-                for (i = 0; i < tsize; i++)
-                {
-                    printf("\n Element at position %d: %d", i, hash[i]);
-                }
-                break;
+                case 4:
+                    break;
 
-            case 4:
-                break;
-            default:
-                printf("Invalid choice\n");
-                break;
+                default:
+                    printf("Invalid choice\n");
+                    break;
             }
         } while (op != 4);
     } while (ch != 3);
