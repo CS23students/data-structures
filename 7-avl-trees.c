@@ -187,14 +187,15 @@ void search(struct Node* root, int key) {
 int main() {
     struct Node* root = NULL;
     int choice, value;
-
+    
+    printf("\n1. Insert Element\n");
+    printf("2. Delete Element\n");
+    printf("3. Search Element\n");
+    printf("4. Left Rotate\n");
+    printf("5. Right Rotate\n");
+    printf("6. Exit\n");
+    
     while (1) {
-        printf("\n1. Insert Element\n");
-        printf("2. Delete Element\n");
-        printf("3. Search Element\n");
-        printf("4. Left Rotate\n");
-        printf("5. Right Rotate\n");
-        printf("6. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -231,11 +232,41 @@ int main() {
 }
 
 
+// OUTPUT:
+// 1. Insert Element
+// 2. Delete Element
+// 3. Search Element
+// 4. Left Rotate
+// 5. Right Rotate
+// 6. Exit
+// Enter your choice: 1
+// Enter the value to insert: 12
+// Inserted 12.
+// Enter your choice: 1
+// Enter the value to insert: 23
+// Inserted 23.
+// Enter your choice: 1
+// Enter the value to insert: 34
+// Inserted 34.
+// Performed Left Rotation
+// Enter your choice: 3
+// Enter the value to search: 12
+// Element 12 found.
+// Enter your choice: 4
+// Performed Left Rotation
+// Enter your choice: 5
+// Performed Right Rotation
+// Enter your choice: 3
+// Enter the value to search: 23
+// Element 23 found.
+// Enter your choice: 5
+// Exiting...
+
 
 //-------------------------------------------------------------------------------------------------------//
 
 
-// another method
+// another method (this also the same like first method)
 #include <stdio.h>
 #include <stdlib.h>
 
