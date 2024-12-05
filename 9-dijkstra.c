@@ -5,10 +5,10 @@
 #define MAX_VERTICES 100
 #define INF 0  // Display 0 for unreachable vertices
 
-// Structure to represent the graph
-typedef struct {
-    int u, v, weight;
-} Edge;
+// Structure to represent the graph(not used so dont write)
+// typedef struct {
+//     int u, v, weight;
+// } Edge;
 
 // Function to find the vertex with the minimum distance value
 int minDistance(int dist[], int sptSet[], int vertices) {
@@ -93,7 +93,7 @@ int main() {
 
 
 
-/tmp/f4McsNj0ZX.o
+// OUTPUT:
 // Enter the number of vertices: 5
 // Enter the number of edges: 6
 // Enter edge 1 (format: u v weight): 0 1 5
